@@ -28,11 +28,11 @@ fn main() -> ! {
 
     // initializing the uart
     
+    let mut peripherals = stm32f407::Peripherals::take().unwrap();
+    let uart = &peripherals.USART1;
 
     debug::exit(debug::EXIT_SUCCESS);
 
-    let mut peripherals = stm32f407::Peripherals::take().unwrap();
-    let uart = &peripherals.USART1;
 
     loop{
         
