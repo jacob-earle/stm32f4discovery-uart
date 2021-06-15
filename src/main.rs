@@ -63,9 +63,9 @@ fn main() -> ! {
     uart.cr3.modify(|_,w| w.dmat().bit(false));
 
     // 5. Select the desired baud rate using the USART_BRR register.
-    // We will aim for a baudrate of 9600
-    // The cpu has a default clock speed of 16 MHz, so the BRR value should be approx. 1666.67, which has integral part 1666 and fractional part approx. 11/16
-    uart.brr.modify(|_,w| w.div_mantissa().bits(1666).div_fraction().bits(11));
+    // We will aim for a baudrate of 9600 Bps
+    // The cpu has a default clock speed of 16 MHz, so the BRR value should be approx. 104.1875, which has integral part 104 and fractional part 3/16
+    uart.brr.modify(|_,w| w.div_mantissa().bits(104).div_fraction().bits(3));
 
     // 6. Set the TE bit in USART_CR1 to send an idle frame as first transmission.
     uart.cr1.modify(|_,w| w.te().bit(true));
