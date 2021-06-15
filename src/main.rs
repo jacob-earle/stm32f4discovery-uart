@@ -37,8 +37,11 @@ fn main() -> ! {
 
     // initialize gpio clock
     rcc.ahb1enr.write(|w| w.gpioben().bit(true));
-    // PB10 is our TX pin and PB11 is our RX pin, so initialize pin 10 as output and pin 11 as input
-    gpiob.moder.modify(|_, w| w.moder11().bits(0b00).moder10().bits(0b01));
+    // PB10 is our TX pin and PB11 is our RX pin
+    // UART functionality is provided by the alternate function mode on the pins
+    // the corresponding alternate function for UART 3 is AF7, so we must write this to the GPIOB_AFRL registers
+    gpiob.moder.modify(|_, w| w.moder11().bits(0b10).moder10().bits(0b10));
+    gpiob.afrh.modify(|_,w| w.afrh10().bits(0b0111).afrh11().bits(0b0111));
     // configure both pins' output speed to high
     gpiob.ospeedr.modify(|_, w| w.ospeedr11().bits(0b10).ospeedr10().bits(0b10));
 
