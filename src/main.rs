@@ -38,7 +38,7 @@ fn main() -> ! {
     // initialize gpio clock
     rcc.ahb1enr.write(|w| w.gpioben().bit(true));
     // PB10 is our TX pin and PB11 is our RX pin, so initialize pin 10 as output and pin 11 as input
-    gpiob.moder.modify(|_, w| w.moder11().bits(0b01).moder10().bits(0b00));
+    gpiob.moder.modify(|_, w| w.moder11().bits(0b00).moder10().bits(0b01));
     // configure both pins' output speed to high
     gpiob.ospeedr.modify(|_, w| w.ospeedr11().bits(0b10).ospeedr10().bits(0b10));
 
