@@ -9,7 +9,7 @@ use panic_halt as _; // you can put a breakpoint on `rust_begin_unwind` to catch
                      // use panic_semihosting as _; // logs messages to the host stderr; requires a debugger
 
 use cortex_m_rt::entry;
-use cortex_m_semihosting::{hprintln, debug};
+use cortex_m_semihosting::{hprintln};
 extern crate alloc;
 use alloc::string::String;
 use alloc_cortex_m::CortexMHeap;
@@ -26,11 +26,24 @@ fn main() -> ! {
     let message = String::from("Hello there!");
     hprintln!("{}", message).unwrap();
 
-    // initializing the uart
     
     let peripherals = stm32f407::Peripherals::take().unwrap();
-    let uart = &peripherals.USART1;
+    let uart = &peripherals.USART3;
 
+    // initializing gpio
+    let gpiob = &peripherals.GPIOB;
+    let rcc = &peripherals.RCC;
+
+
+    // initialize gpio clock
+    rcc.ahb1enr.write(|w| w.gpioben().bit(true));
+    // PB10 is our TX pin and PB11 is our RX pin, so initialize pin 10 as output and pin 11 as input
+    gpiob.moder.modify(|_, w| w.moder11().bits(0b01).moder10().bits(0b00));
+    // configure both pins' output speed to high
+    gpiob.ospeedr.modify(|_, w| w.ospeedr11().bits(0b10).ospeedr10().bits(0b10));
+
+
+    // initializing the uart for TX
     // 1. Enable the USART by writing the UE bit in USART_CR1 register to 1.
     uart.cr1.modify(|_, w|  w.ue().bit(true));
 
@@ -55,8 +68,10 @@ fn main() -> ! {
     uart.cr1.modify(|_,w| w.te().bit(true));
 
     // 7. Write the data to send in the USART_DR register (this clears the TXE bit). Repeat this for each data to be transmitted in case of single buffer
-    // We will write the character "F" to the uart, represented by ASCII code "0x46"
-    uart.dr.write(|w| w.dr().bits(0x46));
+    // We will write the character "F" to the uart, represented by ASCII code "0x46", five times
+    for _ in 0..5{
+        uart.dr.write(|w| w.dr().bits(0x46));
+    }
 
     //debug::exit(debug::EXIT_SUCCESS);
 
