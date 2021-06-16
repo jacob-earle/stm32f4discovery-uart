@@ -11,7 +11,6 @@ use panic_halt as _; // you can put a breakpoint on `rust_begin_unwind` to catch
 use cortex_m_rt::entry;
 use cortex_m_semihosting::{hprintln};
 extern crate alloc;
-use alloc::string::String;
 use alloc_cortex_m::CortexMHeap;
 use stm32f4::stm32f407;
 
@@ -23,9 +22,6 @@ const HEAP_SIZE: usize = 1024; // in bytes
 #[entry]
 fn main() -> ! {
     unsafe { ALLOCATOR.init(cortex_m_rt::heap_start() as usize, HEAP_SIZE) }
-    let message = String::from("Hello there!");
-    hprintln!("{}", message).unwrap();
-
     
     let peripherals = stm32f407::Peripherals::take().unwrap();
     let uart = &peripherals.USART2;
@@ -74,10 +70,12 @@ fn main() -> ! {
 
     // 7. Write the data to send in the USART_DR register (this clears the TXE bit). Repeat this for each data to be transmitted in case of single buffer
     // We will write the character "F" to the uart, represented by ASCII code "0x46", five times
-    for _ in 0..5{
-        uart.dr.write(|w| w.dr().bits(0x46));
-    }
+    for byte in b"Hello there!".iter() {
+        // wait until it is safe to write
+        while uart.sr.read().txe().bit_is_clear() {}
 
+        uart.dr.write(|w| w.dr().bits(u16::from(*byte)));
+    }
     //debug::exit(debug::EXIT_SUCCESS);
 
 
