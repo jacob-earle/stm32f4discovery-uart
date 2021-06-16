@@ -17,6 +17,8 @@ cargo build
 
 Before connecting to the board, we must wire it up properly and initialize a serial connection. If you are using a USB-to-UART adaptor, wire the RX pin of the adaptor to PA2 on the board, wire the TX pin of the adaptor to PA3 on the board, and wire the ground pin on the adaptor to GND on the board.
 
+![Image showing how to connect the pins on the board to the adaptor](./images/PinsOnBoard.jpg "Connect the RX pin on adaptor to PA2, TX pin on adaptor to PA3, and ground pin on adaptor to GND")
+
 Then, using the serial terminal of your choice, open a connection on the serial port from the adaptor with the following settings:
 - Baudrate: 9600 bits/second
 - Bits per word: 8
