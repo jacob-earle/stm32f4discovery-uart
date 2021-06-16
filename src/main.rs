@@ -28,22 +28,24 @@ fn main() -> ! {
 
     
     let peripherals = stm32f407::Peripherals::take().unwrap();
-    let uart = &peripherals.USART3;
+    let uart = &peripherals.USART2;
 
     // initializing gpio
-    let gpiob = &peripherals.GPIOB;
+    let gpioa = &peripherals.GPIOA;
     let rcc = &peripherals.RCC;
 
 
     // initialize gpio clock
-    rcc.ahb1enr.write(|w| w.gpioben().bit(true));
-    // PB10 is our TX pin and PB11 is our RX pin
+    rcc.ahb1enr.write(|w| w.gpioaen().bit(true));
+    // initialize uart clock
+    rcc.apb1enr.write(|w| w.usart2en().bit(true));
+    // PA2 is our TX pin and PA3 is our RX pin
     // UART functionality is provided by the alternate function mode on the pins
-    // the corresponding alternate function for UART 3 is AF7, so we must write this to the GPIOB_AFRL registers
-    gpiob.afrh.modify(|_,w| w.afrh10().bits(0b0111).afrh11().bits(0b0111));
-    gpiob.moder.modify(|_, w| w.moder11().bits(0b10).moder10().bits(0b10));
+    // the corresponding alternate function for UART 2 is AF7, so we must write this to the GPIOA_AFRL registers
+    gpioa.afrl.modify(|_,w| w.afrl2().bits(0b0111).afrl3().bits(0b0111));
+    gpioa.moder.modify(|_, w| w.moder2().bits(0b10).moder3().bits(0b10));
     // configure both pins' output speed to high
-    gpiob.ospeedr.modify(|_, w| w.ospeedr11().bits(0b10).ospeedr10().bits(0b10));
+    gpioa.ospeedr.modify(|_, w| w.ospeedr2().bits(0b10).ospeedr3().bits(0b10));
 
 
     // initializing the uart for TX
