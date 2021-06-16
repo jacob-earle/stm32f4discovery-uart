@@ -76,10 +76,17 @@ fn main() -> ! {
 
         uart.dr.write(|w| w.dr().bits(u16::from(*byte)));
     }
-    //debug::exit(debug::EXIT_SUCCESS);
 
+    // initialize uart for reading as well
+    uart.cr1.modify(|_, w| w.re().bit(true));
 
     loop{
-        
+        // from here, the uart will simply listen for received characters and write them back
+        if uart.sr.read().rxne().bit(){
+            let received = uart.dr.read().dr().bits();
+            while uart.sr.read().txe().bit_is_clear() {}
+
+            uart.dr.write(|w| w.dr().bits(received));
+        }
     }
 }
