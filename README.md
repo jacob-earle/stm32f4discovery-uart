@@ -1,6 +1,6 @@
 # `stm32f4discovery-uart`
 
-This project contains example code on how to configure GPIO pins on the STM32F4DISCOVERY board in Rust. In this example, the orange LED labeled LD3 will blink on and off at 1 second intervals.
+This project contains example code on how to initialize and use the USART on the STM32F4Discovery board to implement simple serial communication.
 
 ## Building and Running
 Follow the instructions in the [Rust Embedded Book](https://docs.rust-embedded.org/book/intro/install/linux.html) to download the necessary components. Additionally, make sure the `thumbv7em-none-eabi` target is installed on your *nightly* Rust toolchain:
