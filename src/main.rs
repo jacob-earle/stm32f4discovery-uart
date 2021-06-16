@@ -70,7 +70,7 @@ fn main() -> ! {
 
     // 7. Write the data to send in the USART_DR register (this clears the TXE bit). Repeat this for each data to be transmitted in case of single buffer
     // We will write the character "F" to the uart, represented by ASCII code "0x46", five times
-    for byte in b"Hello there!".iter() {
+    for byte in b"Hello there!\n".iter() {
         // wait until it is safe to write
         while uart.sr.read().txe().bit_is_clear() {}
 
